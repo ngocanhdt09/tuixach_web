@@ -19,6 +19,13 @@
 <script>
 import axios from 'axios';
 
+// // Đặt token CSRF vào trong cookie
+// const csrfToken = document.cookie.split('; ')
+//   .find(row => row.startsWith('XSRF-TOKEN='))
+//   .split('=')[1];
+
+// // Thiết lập mặc định để tự động thêm CSRF token vào các yêu cầu POST
+// axios.defaults.headers.post['X-XSRF-TOKEN'] = csrfToken;
 export default {
   data() {
     return {
