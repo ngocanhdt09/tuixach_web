@@ -2,6 +2,16 @@
   <div class="product-list">
     <div v-if="loading" class="loading">Loading...</div>
     <div v-else>
+      <div>
+    <input type="text" v-model="searchTerm" placeholder="Nhập tên sản phẩm...">
+    <button @click="searchProducts">Tìm kiếm</button>
+
+    <ul>
+      <!-- <li v-for="product in products" :key="product.id">
+        {{ product.name }} - {{ product.price }}
+      </li> -->
+    </ul>
+  </div>
       <h2 class="section-title">Danh sách sản phẩm</h2>
       <ul class="product-list-items">
         <li v-for="product in paginatedProducts" :key="product.id" class="product-list-item">
@@ -17,7 +27,7 @@
             <p class="product-manufacturer">Nhà sản xuất: {{ product.manufacturer }}</p>
             <p class="product-price">{{ formatCurrency(product.price) }}</p>
             <div class="product-actions">
-              <router-link :to="'/product/' + product.id + '/edit'" class="btn btn-outline-primary">Sửa</router-link>
+              <router-link :to="'/admin/product/' + product.id + '/edit'" class="btn btn-outline-primary">Sửa</router-link>
               <button @click="deleteProduct(product.id)" class="btn btn-outline-danger">Xóa</button>
             </div>
           </div>
@@ -42,6 +52,7 @@
 </template>
 <script>
 import axios from 'axios';
+import Dashboard from './Dashboard.vue';
 
 export default {
   name: 'ProductList',
@@ -52,6 +63,9 @@ export default {
       baseURL: 'http://localhost:8000', // Thay đổi thành URL cơ sở của bạn
       currentPage: 1,
       pageSize: 5, // Số sản phẩm mỗi trang
+      searchTerm: '',
+      
+      error: '',
     };
   },
   computed: {
@@ -110,13 +124,25 @@ export default {
       }
     },
   },
+  async searchProducts() {
+      try {
+        const response = await axios.get('http://localhost:8000/api/products/search', {
+          params: {
+            name: this.searchTerm
+          }
+        });
+        this.products = response.data;
+      } catch (error) {
+        console.error('Lỗi khi tìm kiếm sản phẩm:', error);
+      }
+    },
 };
 </script>
 <style scoped>
 .section-title {
-  font-size: 2rem;
+  font-size: 24px;
   font-weight: bold;
-  margin-bottom: 2rem;
+  margin-bottom: 24px;
   position: sticky;
   top: 60px;
   z-index: 999;
@@ -142,7 +168,7 @@ export default {
   padding: 1rem;
   border: 1px solid #ddd;
   border-radius: 8px;
-  margin-bottom: 1rem;
+  margin-bottom: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
 }
@@ -156,7 +182,7 @@ export default {
   height: 100px;
   overflow: hidden;
   border-radius: 8px;
-  margin-right: 1rem;
+  margin-right: 12px;
 }
 
 .product-img {
@@ -175,30 +201,30 @@ export default {
 }
 
 .product-name {
-  font-size: 1.5rem;
+  font-size: 16px;
   font-weight: bold;
-  margin-bottom: 0.5rem;
+  margin-bottom: 6px;
   color: #333;
 }
 
 .product-manufacturer {
-  margin-bottom: 0.5rem;
+  margin-bottom: 6px;
   color: #666;
 }
 
 .product-price {
-  font-size: 1.2rem;
+  font-size: 14px;
   font-weight: bold;
   color: #007bff;
 }
 
 .product-actions {
-  margin-top: 1rem;
+  margin-top: 12px;
 }
 
 .btn {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
+  padding: 6px 12px;
+  font-size: 12px;
   cursor: pointer;
 }
 
@@ -232,7 +258,7 @@ export default {
 .pagination {
   display: flex;
   justify-content: center;
-  margin-top: 1rem;
+  margin-top: 12px;
 }
 
 .page-item {
@@ -240,8 +266,8 @@ export default {
 }
 
 .page-link {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
+  padding: 6px 12px;
+  font-size: 12px;
   cursor: pointer;
   color: #007bff;
   border: 1px solid #007bff;

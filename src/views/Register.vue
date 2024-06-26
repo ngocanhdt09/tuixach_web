@@ -15,10 +15,10 @@
         <input type="password" id="password" v-model="password" class="form-control" placeholder="Nhập mật khẩu" required>
       </div>
       <!-- Uncomment to include confirm password field -->
-      <!-- <div class="form-group">
+      <div class="form-group">
         <label for="confirmPassword">Xác nhận mật khẩu:</label>
         <input type="password" id="confirmPassword" v-model="confirmPassword" class="form-control" placeholder="Nhập lại mật khẩu" required>
-      </div> -->
+      </div>
       <button @click="register" class="btn btn-primary btn-block">Đăng ký</button>
       <p v-if="errorMessage" class="text-danger mt-3">{{ errorMessage }}</p>
       <p class="text-center mt-2">Bạn đã có tài khoản? <router-link to="/login">Đăng nhập</router-link></p>
@@ -44,19 +44,26 @@ export default {
       this.errorMessage = ''; // Reset lỗi trước khi thực hiện đăng ký
 
       // Kiểm tra định dạng email (nếu cần)
-      // const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      // if (!emailPattern.test(this.email)) {
-      //   this.errorMessage = 'Định dạng email không hợp lệ. Vui lòng nhập lại.';
-      //   return;
-      // }
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(this.email)) {
+        this.errorMessage = 'Định dạng email không hợp lệ. Vui lòng nhập lại.';
+        return;
+      }
 
       // Kiểm tra mật khẩu và mật khẩu xác nhận (nếu cần)
-      // if (this.password !== this.confirmPassword) {
-      //   this.errorMessage = 'Mật khẩu và xác nhận mật khẩu không khớp.';
-      //   return;
-      // }
+      if (this.password !== this.confirmPassword) {
+        this.errorMessage = 'Mật khẩu và xác nhận mật khẩu không khớp.';
+        return;
+      }
 
       try {
+    // Gửi yêu cầu kiểm tra email
+    const response = await axios.get(`http://localhost:8000/api/check-email/${this.email}`);
+
+    if (response.data.exists) {
+      this.errorMessage = 'Email đã được sử dụng. Vui lòng sử dụng email khác.';
+      return;
+    }
         // Gửi request đăng ký tài khoản
         await axios.post('http://localhost:8000/api/register', {
           email: this.email,

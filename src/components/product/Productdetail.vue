@@ -6,10 +6,10 @@
           <img :src="getFullImageUrl(product.image)" :alt="product.name">
         </div>
         <div class="product-detail-info">
-          <h2 class="product-detail-name">{{ product.name }}</h2>
+          <h3 class="product-detail-name">{{ product.name }}</h3>
           <div class="product-detail-price">{{ formatCurrency(product.price) }}</div>
-          <h2 class="product-detail-name">Chất liệu : {{ product.product_type }}</h2>
-          <h2 class="product-detail-name">{{ product.manufacturer }}</h2>
+          <h4 class="product-detail-name">Chất liệu : {{ product.product_type }}</h4>
+          <h4 class="product-detail-name">{{ product.manufacturer }}</h4>
           <div class="product-detail-quantity">
             <label for="quantity">Số lượng:</label>
             <input type="number" id="quantity" v-model.number="quantity" min="1">
@@ -123,7 +123,7 @@ export default {
 }
 
 .product-detail-price {
-  font-size: 20px; /* Tương đương với 1.5rem */
+  font-size: 18px; /* Tương đương với 1.5rem */
   font-weight: bold;
   color: #ee4d2d;
   margin-bottom: 10px;
@@ -132,7 +132,7 @@ export default {
 .btn-add-to-cart {
   margin-top: 20px;
   padding: 12px 24px;
-  font-size: 20px; /* Tương đương với 1.5rem */
+  font-size: 15px; /* Tương đương với 1.5rem */
   background-color: #ee4d2d;
   color: #ffffff;
   border: none;
@@ -155,13 +155,13 @@ export default {
 }
 
 .product-detail-description h3 {
-  font-size: 28px; /* Tương đương với 1.75rem */
+  font-size: 18px; /* Tương đương với 1.75rem */
   margin-bottom: 10px;
   color: #333333;
 }
 
 .product-detail-description p {
-  font-size: 24px; /* Tương đương với 1.5rem */
+  font-size: 15px; /* Tương đương với 1.5rem */
   line-height: 1.8;
   color: #555555;
 }
@@ -171,13 +171,13 @@ export default {
 }
 
 .product-return-policy h3 {
-  font-size: 28px; /* Tương đương với 1.75rem */
+  font-size: 18px; /* Tương đương với 1.75rem */
   margin-bottom: 10px;
   color: #333333;
 }
 
 .product-return-policy p {
-  font-size: 24px; /* Tương đương với 1.5rem */
+  font-size: 15px; /* Tương đương với 1.5rem */
   line-height: 1.8;
   color: #555555;
 }
@@ -187,7 +187,7 @@ export default {
 }
 
 .product-detail-quantity label {
-  font-size: 24px; /* Tương đương với 1.5rem */
+  font-size: 20px; /* Tương đương với 1.5rem */
   color: #333333;
   margin-right: 10px;
 }
@@ -195,7 +195,7 @@ export default {
 .product-detail-quantity input[type="number"] {
   width: 60px;
   padding: 8px;
-  font-size: 24px; /* Tương đương với 1.5rem */
+  font-size: 20px; /* Tương đương với 1.5rem */
   border: 1px solid #ccc;
   border-radius: 4px;
   outline: none;

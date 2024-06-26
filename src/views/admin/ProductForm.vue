@@ -14,8 +14,15 @@
       <textarea id="description" v-model="formData.description" class="form-control" rows="4" required></textarea>
     </div>
     <div class="form-group">
-      <label for="product_type">Loại Sản Phẩm:</label>
+      <label for="product_type">Chất Liệu:</label>
       <input type="text" id="product_type" v-model="formData.product_type" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="category_id">Loại Sản Phẩm:</label>
+      <select id="category_id" v-model="formData.category_id" class="form-control" required>
+        <option value="">Chọn loại sản phẩm</option>
+        <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
+      </select>
     </div>
     <div class="form-group">
       <label for="quantity">Số lượng:</label>
@@ -30,75 +37,88 @@
     <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
   </div>
 </template>
+
 <script>
 import axios from 'axios';
 
 export default {
   data() {
     return {
-      baseURL: 'http://localhost:8000', // Đường dẫn cơ sở của API
+      baseURL: 'http://localhost:8000',
       formData: {
         name: '',
         quantity: 0,
         price: 0,
         description: '',
         product_type: '',
-        image: null // Để lưu trữ tệp hình ảnh được chọn
+        category_id: '',
+        image: null
       },
-      errorMessage: ''
+      errorMessage: '',
+      categories: []
     };
   },
+  mounted() {
+    this.fetchCategories();
+  },
   methods: {
+    fetchCategories() {
+      axios.get(`${this.baseURL}/api/categories`)
+        .then(response => {
+          this.categories = response.data;
+        })
+        .catch(error => {
+          console.error('Error fetching categories:', error);
+        });
+    },
     addProduct() {
-      // Tạo đối tượng FormData để xử lý tải tệp
       let formData = new FormData();
       formData.append('name', this.formData.name);
       formData.append('price', this.formData.price);
       formData.append('description', this.formData.description);
       formData.append('product_type', this.formData.product_type);
+      formData.append('category_id', this.formData.category_id);
       formData.append('quantity', this.formData.quantity);
-      formData.append('image', this.formData.image); // Thêm tệp hình ảnh vào FormData
+      formData.append('image', this.formData.image);
 
-      // Gửi yêu cầu POST đến API endpoint
       axios.post(`${this.baseURL}/api/create`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data' // Thiết lập header cho multipart form-data
+          'Content-Type': 'multipart/form-data'
         }
       })
       .then(response => {
         console.log('Product added:', response.data);
-        // Đặt lại dữ liệu form sau khi gửi thành công
-        this.formData = {
-          name: '',
-          quantity: 0,
-          price: 0,
-          description: '',
-          product_type: '',
-          image: null
-        };
-        this.$router.push('/admin/product-management'); // Chuyển hướng sau khi thêm sản phẩm thành công
+        this.resetForm();
+        this.$router.push('/admin/product-management');
       })
       .catch(error => {
         console.error('Error adding product:', error);
-        this.errorMessage = 'Thêm sản phẩm thất bại. Vui lòng thử lại.'; // Hiển thị thông báo lỗi nếu yêu cầu thất bại
+        this.errorMessage = 'Thêm sản phẩm thất bại. Vui lòng thử lại.';
       });
     },
     handleFileUpload(event) {
-      this.formData.image = event.target.files[0]; // Lưu trữ tệp hình ảnh được chọn vào formData.image
+      this.formData.image = event.target.files[0];
+    },
+    resetForm() {
+      this.formData = {
+        name: '',
+        quantity: 0,
+        price: 0,
+        description: '',
+        product_type: '',
+        category_id: '',
+        image: null
+      };
     }
   }
 };
 </script>
+
 <style scoped>
-/* CSS cho form đăng ký */
 .product-container {
-  position: absolute;
-  top: 80%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: calc(100% - 40px); /* 40px là khoảng cách lề ở hai bên */
-  max-width: 400px;
-  padding: 20px;
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
   background-color: #f9f9f9;
@@ -116,11 +136,11 @@ label {
 }
 
 .form-control {
-  width: 100%;
+  width: calc(100% - 20px);
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 1rem;
+  font-size: 16px; /* Font size adjusted */
 }
 
 .form-control-file {
@@ -139,7 +159,7 @@ label {
   background-color: #007bff;
   color: #fff;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 16px; /* Font size adjusted */
 }
 
 .btn:hover {
@@ -149,6 +169,6 @@ label {
 .error-message {
   color: red;
   margin-top: 10px;
-  font-size: 0.9rem;
+  font-size: 14px; /* Font size adjusted */
 }
 </style>

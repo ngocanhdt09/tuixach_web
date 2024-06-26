@@ -28,7 +28,13 @@
             <li class="nav-item">
               <router-link class="nav-link" to="/contact">Liên hệ</router-link>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" v-if="isLoggedIn()">
+              <router-link class="nav-link" to="/profile">Thông tin người dùng</router-link>
+            </li>
+            <li class="nav-item" v-if="isLoggedIn()">
+              <button class="nav-link" @click="logout">Đăng xuất</button>
+            </li>
+            <li class="nav-item" v-else>
               <router-link class="nav-link" to="/login">Đăng nhập</router-link>
             </li>
           </ul>
@@ -41,8 +47,31 @@
 <script>
 export default {
   name: 'Header',
+  methods: {
+    isLoggedIn() {
+      // Kiểm tra xem người dùng đã đăng nhập hay chưa (ví dụ: kiểm tra localStorage)
+      const userToken = localStorage.getItem('userToken');
+      
+      return !!userToken; // Trả về true nếu có userToken, ngược lại false
+    },
+    logout() {
+      // Xóa token khỏi localStorage
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('userInfo');
+      localStorage.removeItem('roleUser');
+      // Xóa token khỏi Local Storage và cập nhật trạng thái ngay lập tức
+      this.$router.push('/login');
+      location.reload(); // Tải lại trang để cập nhật trạng thái ngay lập tức
+    }
+  }
 };
 </script>
+
+<style scoped>
+/* CSS styling cho header */
+/* Giữ nguyên phần CSS styling của bạn */
+</style>
+
 
 <style scoped>
 /* CSS styling cho header */

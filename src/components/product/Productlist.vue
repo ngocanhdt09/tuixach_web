@@ -8,7 +8,9 @@
           <div v-for="product in products" :key="product.id" class="card mb-4 shadow-sm product-card">
             <router-link :to="'/product/' + product.id" class="card-link">
               <div class="card-frame">
+              <router-link :to="'/products/' + product.id" >
                 <img :src="product.imageUrl" class="card-img-top" :alt="product.name">
+                </router-link>
               </div>
             </router-link>
             <div class="card-body">

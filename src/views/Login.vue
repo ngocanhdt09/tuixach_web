@@ -36,46 +36,52 @@ export default {
   },
   methods: {
     async login() {
-      this.errorMessage = ''; // Reset lỗi trước khi thử đăng nhập
+  this.errorMessage = ''; // Reset lỗi trước khi thử đăng nhập
 
-      // Kiểm tra định dạng email
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailPattern.test(this.username)) {
-        this.errorMessage = 'Định dạng email không hợp lệ. Vui lòng nhập lại.';
+  // Kiểm tra định dạng email
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailPattern.test(this.username)) {
+    this.errorMessage = 'Định dạng email không hợp lệ. Vui lòng nhập lại.';
+    return;
+  }
+  if (!this.password) {
+        this.errorMessage = 'Vui lòng nhập mật khẩu.';
         return;
       }
+      
 
-      try {
-        const response = await axios.post('http://localhost:8000/api/login', {
-          email: this.username,
-          password: this.password
-        });
+  try {
+    const response = await axios.post('http://localhost:8000/api/login', {
+      email: this.username,
+      password: this.password
+    });
 
-        console.log(response.data);
+    // Lưu trữ token và thông tin người dùng
+    // Lưu trữ token và thông tin người dùng
+    localStorage.setItem('userToken', response.data.access_token);
+    localStorage.setItem('userInfo', JSON.stringify(response.data.user));
 
-        // Lưu trữ token và thông tin người dùng
-        localStorage.setItem('userToken', response.data.access_token);
-        localStorage.setItem('userInfo', JSON.stringify(response.data.user));
-
-        // Kiểm tra xem người dùng có phải là admin không
-        if (response.data.message === 'Admin login successful') {
-          // Chuyển hướng đến trang admin
-          this.$router.push('/admin/dashboard');
-        } else {
-          // Chuyển hướng đến trang giao diện khách hàng
-          this.$router.push('/customer');
-        }
-      } catch (error) {
-        if (error.response && error.response.data) {
-          this.errorMessage = error.response.data.error || 'Đăng nhập không thành công. Vui lòng kiểm tra thông tin đăng nhập của bạn.';
-        } else {
-          this.errorMessage = 'Đăng nhập không thành công. Vui lòng kiểm tra thông tin đăng nhập của bạn.';
-        }
-        console.log('Đăng nhập thất bại', error);
-      }
+    // Lưu trữ vai trò của người dùng (ví dụ: admin hoặc customer)
+    localStorage.setItem('userRole', response.data.user.role);
+   // Kiểm tra vai trò để chuyển hướng phù hợp
+   if (response.data.user.role === 'admin') {
+      // Nếu là admin, chuyển hướng đến trang admin/dashboard
+      this.$router.push('/admin/dashboard');
+    } else {
+      // Nếu là user, chuyển hướng đến trang sản phẩm
+      this.$router.push('/products');
     }
+  } catch (error) {
+    if (error.response && error.response.data) {
+      this.errorMessage = error.response.data.error || 'Đăng nhập không thành công. Vui lòng kiểm tra thông tin đăng nhập của bạn.';
+    } else {
+      this.errorMessage = 'Đăng nhập không thành công. Vui lòng kiểm tra thông tin đăng nhập của bạn.';
+    }
+    console.log('Đăng nhập thất bại', error);
   }
-};
+}
+  }
+}
 </script>
 <style scoped>
 /* CSS cho form đăng nhập */
